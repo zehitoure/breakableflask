@@ -316,7 +316,7 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
     parser.add_argument('-p', '--port', type=int, help='Listen port. Default: 4000', default=4000)
-    parser.add_argument('-a', '--address', type=str, help='Listen address. Default: 127.0.0.1', default='127.0.0.1')
+    parser.add_argument('-a', '--address', type=str, help='Listen address. Default: 0.0.0.0', default='0.0.0.0')
     parser.add_argument('-d', help='Debug level', action="count", default=0)
     parser.add_argument('--database_type', help='Database type. Default: sqlite', default='sqlite', choices=['postgres', 'oracle', 'mysql', 'mssql', 'sqlite'])
     parser.add_argument('--database_user', type=str, help='Database username. Default: None', default=None)
