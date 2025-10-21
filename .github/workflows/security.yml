@@ -1,0 +1,44 @@
+name: CI Sécurité
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  dependances:
+    name: 📦 Vérification des dépendances Python
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🔁 Cloner le dépôt
+        uses: actions/checkout@v4
+
+      - name: 📦 Installer pip-audit
+        run: pip install pip-audit
+
+      - name: 🔍 Scanner les dépendances
+        run: pip-audit -r requirements.txt
+
+  dockerfile:
+    name: 🐳 Analyse Dockerfile
+    needs: dependances   # 👈 exécute ce job uniquement si "dependances" réussit
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🔁 Cloner le dépôt
+        uses: actions/checkout@v4
+
+      - name: 📋 Linter le Dockerfile avec hadolint
+        uses: hadolint/hadolint-action@v3.1.0
+        with:
+          dockerfile: ./Dockerfile
+
+      - name: 🛡️ Scanner de vulnérabilités (Trivy)
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: "config"
+          scan-ref: "."
+          format: "table"
+          severity: "HIGH,CRITICAL"
