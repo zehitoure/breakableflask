@@ -1,1 +1,37 @@
+name: 🛠️ Build et tests
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: 🔧 Build de l'image + tests
+
+    steps:
+      - name: 🔁 Cloner le repo
+        uses: actions/checkout@v4
+
+      - name: 🐍 Installer Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: 📦 Installer les dépendances
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r exigences.txt
+
+      - name: 🧪 Lancer les tests
+        run: |
+          if [ -f test.py ]; then python test.py; else echo "Pas de fichier de test"; fi
+
+      - name: 🐳 Construire l’image Docker
+        run: docker build -t monapp:latest .
+
+      - name: 🛠️ Lancer le conteneur
+        run: docker run --rm -d -p 5000:5000 monapp:latest
 
